@@ -56,13 +56,20 @@ function stripReasoning(model, text) {
 }
 
 // 仅放行白名单内开源模型，避免被滥用调用任意模型（与 proxy-worker.js 白名单一致）。
+// 仅放行 Workers AI 上**真实存在**的模型（已通过 Cloudflare 官方文档核实 ID）。
+// 优先非推理模型；reasoning 类模型（qwen3/qwq/gpt-oss/gemma-4）会先输出思维链，
+// 容易触发 length 截断导致 content 为 null，故不放进默认白名单。
 const ALLOWED_AI = [
-  '@cf/qwen/qwen3-30b-a3b-fp8', '@cf/qwen/qwq-32b', '@cf/zai-org/glm-4.7-flash',
-  '@cf/google/gemma-4-26b-a4b-it', '@cf/mistralai/mistral-small-3.1-24b-instruct',
-  '@cf/meta/llama-3.2-3b-instruct', '@cf/openai/gpt-oss-20b',
-  '@cf/qwen/qwen2.5-7b-instruct', '@cf/qwen/qwen2.5-72b-instruct'
+  '@cf/meta/llama-3.3-70b-instruct-fp8-fast',         // 强·非推理·默认
+  '@cf/qwen/qwen2.5-coder-32b-instruct',             // 中文稳·非推理
+  '@cf/meta/llama-3.1-8b-instruct-fp8',              // 轻量·非推理
+  '@cf/mistralai/mistral-small-3.1-24b-instruct',    // 24B
+  '@cf/meta/llama-3.2-3b-instruct',                  // 轻量
+  '@cf/zai-org/glm-4.7-flash',                       // 多语言（部分版本带 reasoning）
+  '@cf/qwen/qwen3-30b-a3b-fp8',                      // 中文 reasoning
+  '@cf/qwen/qwq-32b'                                 // 深度 reasoning
 ];
-const DEFAULT_AI = '@cf/qwen/qwen3-30b-a3b-fp8'; // 中文友好、免费额度内、活跃维护
+const DEFAULT_AI = '@cf/meta/llama-3.3-70b-instruct-fp8-fast'; // 大尺寸非推理，出答案最稳
 
 // 预检
 export async function onRequestOptions() {
