@@ -2681,6 +2681,8 @@ let llmLastErr = null;  // 最近一次 LLM 调用失败原因（非侵入式提
 // 开源(Workers AI) 可选模型清单：均为 Cloudflare 免费额度内、活跃维护的开源模型，中文友好优先。
 // 与 proxy-worker.js 白名单保持一致；此处仅用于前端下拉展示。
 const WORKERS_AI_MODELS = [
+  { id:'@cf/qwen/qwen2.5-7b-instruct',            label:'通义千问 2.5 7B（中文稳·非推理·推荐）' },
+  { id:'@cf/qwen/qwen2.5-72b-instruct',           label:'通义千问 2.5 72B（中文强·非推理）' },
   { id:'@cf/qwen/qwen3-30b-a3b-fp8',            label:'通义千问3 30B（中文优·推荐）' },
   { id:'@cf/qwen/qwq-32b',                      label:'千问 QwQ 32B（深度推理）' },
   { id:'@cf/zai-org/glm-4.7-flash',             label:'智谱 GLM-4.7-Flash（多语言·快）' },
